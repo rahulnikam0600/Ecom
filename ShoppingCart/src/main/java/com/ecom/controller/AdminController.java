@@ -22,7 +22,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.ecom.model.Category;
+import com.ecom.model.Product;
 import com.ecom.service.CategoryService;
+import com.ecom.service.ProductService;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -32,6 +34,9 @@ public class AdminController {
 
 	@Autowired
 	private CategoryService categoryService;
+	
+	@Autowired
+	private ProductService productService;
 
 	@GetMapping("/")
 	public String index() {
@@ -53,11 +58,7 @@ public class AdminController {
 		return "admin/category";
 	}
 
-	
-/*
- * Below code is to add the new category in admins category page
- * 
- * */
+/******************************************************************************************************/	
 	@PostMapping("/saveCategory")
 	public String saveCategory(@ModelAttribute Category category,
 			@RequestParam("file") MultipartFile file,
@@ -94,6 +95,7 @@ public class AdminController {
 		return "redirect:/admin/category";
 	}
 	
+	/******************************************************************************************************/	
 	@GetMapping("/deleteCategory/{id}")
 	public String deleteCategory(@PathVariable int id,
 			HttpSession session) {
@@ -110,6 +112,7 @@ public class AdminController {
 		
 	}
 	
+	/******************************************************************************************************/	
 	@GetMapping("/loadEditCategory/{id}")
 	public String loadEditCategory(@PathVariable int id, Model m) {
 		
@@ -118,6 +121,7 @@ public class AdminController {
 		return "/admin/edit_category";
 	}
 	
+	/******************************************************************************************************/	
 	@PostMapping("/updateCategory")
 	public String updateCategory(@ModelAttribute Category category,
 			@RequestParam("file") MultipartFile file,
@@ -128,7 +132,7 @@ public class AdminController {
 		
 		if(!ObjectUtils.isEmpty(category)) {
 			oldCategory.setName(category.getName());
-			oldCategory.setIsActive(category.getIsActive());
+			oldCategory.setActive(category.isActive());
 			oldCategory.setImageName(imageName);
 		}
 		
@@ -150,5 +154,40 @@ public class AdminController {
 			session.setAttribute("errorMsg","Something Wrong on Server");
 		}		
 		return "redirect:/admin/loadEditCategory/"+category.getId();		
+	}
+	
+	/**
+	 * @throws IOException ****************************************************************************************************/
+	@PostMapping("/saveProduct")
+	public String saveProduct(@ModelAttribute Product product,
+			@RequestParam("file") MultipartFile file,
+			HttpSession session) throws IOException {
+		
+		String imageName = file.isEmpty() ? "default.jpg" : file.getOriginalFilename();
+		
+		product.setImage(imageName);
+		
+		Product savedProduct =  productService.saveProduct(product);
+		
+		System.out.println(savedProduct);
+		
+		if(!ObjectUtils.isEmpty(savedProduct)) {
+
+			File file2 = new ClassPathResource("static/img").getFile();
+			
+			Path path =  Paths.get(file2.getAbsolutePath()+File.separator+"product_img"+File.separator
+					+file.getOriginalFilename());
+			
+			System.out.println(path);
+							
+			Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
+
+			
+			session.setAttribute("successMsg", "Product Saved Successfully");
+		}else {
+			session.setAttribute("errorMsg", "Something Wrong On Server");
+		}
+		
+		return "redirect:/admin/add-product";
 	}
 }
