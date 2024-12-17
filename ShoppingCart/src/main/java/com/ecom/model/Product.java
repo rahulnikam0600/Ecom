@@ -35,11 +35,18 @@ public class Product {
 	private int stock;
 	
 	private String image;
+	
+	private Integer discount;
+	
+	private Double discountedPrice;
+	
+	private Boolean isActive;
 
 	@Override
 	public String toString() {
 		return "Product [id=" + id + ", title=" + title + ", description=" + description + ", category=" + category
-				+ ", price=" + price + ", stock=" + stock + ", image=" + image + "]";
+				+ ", price=" + price + ", stock=" + stock + ", image=" + image + ", discount=" + discount
+				+ ", discountedPrice=" + discountedPrice + "]";
 	}
 	
 }
