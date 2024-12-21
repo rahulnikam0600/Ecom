@@ -13,13 +13,13 @@
 					<div class="card card-sh">
 						<div class="card-header text-center ">
 							<p class="fs-4">Edit Product</p>
-							<th:block th:i="${session.successMsg}">
-								<p class="text-success fw-bold">[[${session.successMsg}]]</p>
+							<th:block th:i="${session.succMsg}">
+								<p class="text-success fw-bold">[[${session.succMsg}]]</p>
 							</th:block>
 							<th:block th:if="${session.errorMsg}">
 								<p class="text-danger fw-bold">[[${session.errorMsg}]]</p>
 							</th:block>
-							<th:block th:text="${@commonServiceImpl.removeSystemMessage()}"></th:block>
+							<th:block th:text="${@commonServiceImpl.removeSessionMessage()}"></th:block>
 						</div>
 						<div class="card-body">
 							<form action="/admin/updateProduct" method="post"
@@ -56,7 +56,7 @@
 									</div>
 									<div class="mb-3 col">
 										<label>Discount Price</label> <input type="number" readonly
-											th:value="${product.discountedPrice}" class="form-control">
+											th:value="${product.discountPrice}" class="form-control">
 									</div>
 								</div>
 

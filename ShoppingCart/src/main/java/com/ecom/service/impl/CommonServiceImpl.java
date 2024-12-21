@@ -13,11 +13,11 @@ import jakarta.servlet.http.HttpSession;
 public class CommonServiceImpl  implements CommonService{
 
 	@Override
-	public void removeSystemMessage() {
+	public void removeSessionMessage() {
 
 		HttpServletRequest request = ((ServletRequestAttributes)(RequestContextHolder.getRequestAttributes())).getRequest();
 		HttpSession httpSession = request.getSession();
-		httpSession.removeAttribute("successMsg");
+		httpSession.removeAttribute("succMsg");
 		httpSession.removeAttribute("errorMsg");
 	}
 

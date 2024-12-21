@@ -6,7 +6,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -20,33 +19,26 @@ public class Product {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int id;
-	
+	private Integer id;
+
 	@Column(length = 500)
 	private String title;
-	
+
 	@Column(length = 5000)
 	private String description;
-	
+
 	private String category;
-	
+
 	private Double price;
 
 	private int stock;
-	
+
 	private String image;
+
+	private int discount;
 	
-	private Integer discount;
-	
-	private Double discountedPrice;
+	private Double discountPrice;
 	
 	private Boolean isActive;
-
-	@Override
-	public String toString() {
-		return "Product [id=" + id + ", title=" + title + ", description=" + description + ", category=" + category
-				+ ", price=" + price + ", stock=" + stock + ", image=" + image + ", discount=" + discount
-				+ ", discountedPrice=" + discountedPrice + "]";
-	}
 	
 }
