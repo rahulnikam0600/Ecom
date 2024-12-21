@@ -6,7 +6,7 @@
 <title>Insert title here</title>
 </head>
 <body>
-		<section>
+	<section>
 		<div class="container-fluid bg-primary p-5 mt-5 ">
 			<div class="row">
 				<div class="col-md-8 offset-md-2">
@@ -34,7 +34,7 @@
 							<div class="list-group">
 								<p class="fs-5">Category</p>
 								<a href="/products"
-									th:classappend="${paramValue==''} ? 'isActive':''"
+									th:classappend="${paramValue==''} ? 'active':''"
 									class="list-group-item list-group-item-action"
 									aria-current="true"> All </a> <a th:each="c:${categories}"
 									th:href="@{'/products?category='+${c.name}}"
@@ -59,7 +59,7 @@
 												<p class="fs-5 text-center">[[${p.title}]]</p>
 												<div class="row text-center">
 													<p class="fs-6 fw-bold ">
-														<span>&#8377; [[${p.discountedPrice}]]</span> <br> <span
+														<span>&#8377; [[${p.discountPrice}]]</span> <br> <span
 															class="text-decoration-line-through text-secondary">&#8377;
 															[[${p.price}]]</span> <span class="fs-6 text-success">[[${p.discount}]]%
 															off </span>
@@ -83,6 +83,7 @@
 				</div>
 			</div>
 		</div>
-		</section>
+
+	</section>
 </body>
 </html>

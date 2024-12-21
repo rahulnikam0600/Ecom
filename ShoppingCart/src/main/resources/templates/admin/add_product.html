@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymleaf.org"
-	th:replace="~{base::Layout(~{::section})}">
+	th:replace="base::Layout(~{::section})">
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
@@ -13,13 +13,13 @@
 					<div class="card card-sh">
 						<div class="card-header text-center ">
 							<p class="fs-4">Add Product</p>
-							<th:blockth:if{$session.successMsg}>
-								<p class="text-success fw-bold">[[${session.successMsg}]]</p>
+							<th:block th:i="${session.succMsg}">
+								<p class="text-success fw-bold">[[${session.succMsg}]]</p>
 							</th:block>
-							<th:blockth:if{$session.errorMsg}>
+							<th:block th:if="${session.errorMsg}">
 								<p class="text-danger fw-bold">[[${session.errorMsg}]]</p>
 							</th:block>
-							<th:block th:text="${@commonServiceImpl.removeSystemMessage()}"></th:block>
+							<th:block th:text="${@commonServiceImpl.removeSessionMessage()}"></th:block>
 						</div>
 						<div class="card-body">
 							<form action="/admin/saveProduct" method="post" enctype="multipart/form-data">

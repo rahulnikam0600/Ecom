@@ -16,13 +16,13 @@
 					<div class="card shadow p-3 mb-5 bg-body-tertiary rounded">
 						<div class="card-header text-center">
 							<p class="fs-4">Register</p>
-							<th:block th:i="${session.successMsg}">
-								<p class="text-success fw-bold">[[${session.successMsg}]]</p>
+							<th:block th:i="${session.succMsg}">
+								<p class="text-success fw-bold">[[${session.succMsg}]]</p>
 							</th:block>
 							<th:block th:if="${session.errorMsg}">
 								<p class="text-danger fw-bold">[[${session.errorMsg}]]</p>
 							</th:block>
-							<th:block th:text="${@commonServiceImpl.removeSystemMessage()}"></th:block>
+							<th:block th:text="${@commonServiceImpl.removeSessionMessage()}"></th:block>
 						</div>
 						<div class="card-body">
 							<form action="/saveUser" enctype="multipart/form-data"

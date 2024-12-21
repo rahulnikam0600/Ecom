@@ -9,20 +9,18 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import com.ecom.model.UserDtls;
 
-public class CustomUser implements UserDetails{
+public class CustomUser implements UserDetails {
 
 	private UserDtls user;
 
-	public CustomUser(UserDtls userDtls) {
+	public CustomUser(UserDtls user) {
 		super();
-		this.user = userDtls;
+		this.user = user;
 	}
-	
+
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
-		
 		SimpleGrantedAuthority authority = new SimpleGrantedAuthority(user.getRole());
-		
 		return Arrays.asList(authority);
 	}
 
@@ -43,7 +41,7 @@ public class CustomUser implements UserDetails{
 
 	@Override
 	public boolean isAccountNonLocked() {
-		return true;
+		return user.getAccountNonLocked();
 	}
 
 	@Override
@@ -53,6 +51,7 @@ public class CustomUser implements UserDetails{
 
 	@Override
 	public boolean isEnabled() {
-		return true;
-	}	
+		return user.getIsEnable();
+	}
+
 }
