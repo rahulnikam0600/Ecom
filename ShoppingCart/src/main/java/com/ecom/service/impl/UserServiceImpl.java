@@ -7,6 +7,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 
 import com.ecom.model.UserDtls;
 import com.ecom.repository.UserRepository;
@@ -24,15 +25,21 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public UserDtls saveUser(UserDtls user) {
-		user.setRole("ROLE_USER");
-		user.setIsEnable(true);
-		user.setAccountNonLocked(true);
-		user.setFailedAttempt(0);
+		
+		UserDtls userCheck = userRepository.findByEmail(user.getEmail());
+		
+		if(ObjectUtils.isEmpty(userCheck)) {
+			user.setRole("ROLE_USER");
+			user.setIsEnable(true);
+			user.setAccountNonLocked(true);
+			user.setFailedAttempt(0);
 
-		String encodePassword = passwordEncoder.encode(user.getPassword());
-		user.setPassword(encodePassword);
-		UserDtls saveUser = userRepository.save(user);
-		return saveUser;
+			String encodePassword = passwordEncoder.encode(user.getPassword());
+			user.setPassword(encodePassword);
+			UserDtls saveUser = userRepository.save(user);
+			return saveUser;
+		}
+		return null;
 	}
 
 	@Override

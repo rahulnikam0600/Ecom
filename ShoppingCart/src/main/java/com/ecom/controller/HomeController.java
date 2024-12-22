@@ -130,7 +130,7 @@ public class HomeController {
 			}
 			session.setAttribute("succMsg", "Register successfully");
 		} else {
-			session.setAttribute("errorMsg", "something wrong on server");
+			session.setAttribute("errorMsg", "Something wrong on server");
 		}
 
 		return "redirect:/register";
