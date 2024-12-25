@@ -8,16 +8,15 @@ import com.ecom.model.Product;
 
 public interface ProductService {
 
-	public Product saveProduct(Product product);
+	public Boolean saveProduct(Product product, MultipartFile file);
+	
+	public Boolean updateProduct(Product product, MultipartFile file);
+
+	public boolean deleteProduct(Integer id);
 	
 	public List<Product> getAllProducts();
 	
-	public boolean deleteProduct(Integer id);
-	
-	public Product getProductById(Integer id);
-
-	Product updateProduct(Product product, MultipartFile image);
-
 	List<Product> getAllActiveProducts(String category);
-	
+
+	public Product getProductById(Integer id);
 }
