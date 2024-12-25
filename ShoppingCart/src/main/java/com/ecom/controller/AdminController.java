@@ -7,6 +7,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -141,6 +142,12 @@ public class AdminController {
 	public String addProduct(@ModelAttribute Product product, @RequestParam("file") MultipartFile file,
 			HttpSession session) throws IOException {
 
+		System.err.println(product.getTitle());
+		
+		if(ObjectUtils.isEmpty(product.getTitle())) {
+			System.err.println("****************************************************************************************************");
+		}
+		
 		Boolean saved = productService.saveProduct(product, file);
 		if (saved) {
 			session.setAttribute("succMsg", "Product Saved Successfully");

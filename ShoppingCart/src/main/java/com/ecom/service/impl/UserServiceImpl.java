@@ -8,27 +8,37 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.ecom.model.UserDtls;
 import com.ecom.repository.UserRepository;
+import com.ecom.service.CommonService;
 import com.ecom.service.UserService;
 import com.ecom.util.AppConstant;
 
 @Service
 public class UserServiceImpl implements UserService {
 
+	private final String imageFolder = "profile_img";
+	
 	@Autowired
 	private UserRepository userRepository;
 
 	@Autowired
 	private PasswordEncoder passwordEncoder;
+	
+	@Autowired
+	private CommonService commonService;
 
 	@Override
-	public UserDtls saveUser(UserDtls user) {
+	public Boolean saveUser(UserDtls user, MultipartFile file) {
 		
+		Boolean registerd = false;
 		UserDtls userCheck = userRepository.findByEmail(user.getEmail());
 		
 		if(ObjectUtils.isEmpty(userCheck)) {
+			String imageName = file.isEmpty() ? "default.jpg" : file.getOriginalFilename();
+			user.setProfileImage(imageName);
 			user.setRole("ROLE_USER");
 			user.setIsEnable(true);
 			user.setAccountNonLocked(true);
@@ -37,9 +47,13 @@ public class UserServiceImpl implements UserService {
 			String encodePassword = passwordEncoder.encode(user.getPassword());
 			user.setPassword(encodePassword);
 			UserDtls saveUser = userRepository.save(user);
-			return saveUser;
+			
+			if(!ObjectUtils.isEmpty(saveUser)) {
+				registerd = true;
+				commonService.saveImage(file, imageFolder);
+			}
 		}
-		return null;
+		return registerd;
 	}
 
 	@Override
