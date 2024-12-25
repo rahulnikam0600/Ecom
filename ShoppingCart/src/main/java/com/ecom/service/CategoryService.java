@@ -11,7 +11,9 @@ import jakarta.servlet.http.HttpSession;
 
 public interface CategoryService {
 	
-	public Category saveCategory(Category category, MultipartFile file,HttpSession session) throws IOException;
+	public Boolean saveCategory(Category category, MultipartFile file) throws IOException;
+
+	public Boolean updateCategory(Category category, MultipartFile file) throws IOException;
 
 	public boolean isCategoryExist(String name);
 	

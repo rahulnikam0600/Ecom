@@ -77,9 +77,18 @@ public class AdminController {
 	@PostMapping("/saveCategory")
 	public String saveCategory(@ModelAttribute Category category, @RequestParam("file") MultipartFile file,
 			HttpSession session) throws IOException {
-
-		categoryService.saveCategory(category, file, session);
-
+				
+		if(categoryService.isCategoryExist(category.getName())) {
+			session.setAttribute("errorMsg", "Category Already Exists");
+		}else {
+			Boolean saved =  categoryService.saveCategory(category, file);
+			if(saved) {
+				session.setAttribute("succMsg", "Saved successfully");
+			}else {
+				session.setAttribute("errorMsg", "Not saved ! Internal Server Error");
+			}
+		}
+		
 		return "redirect:/admin/category";
 	}
 
@@ -105,36 +114,13 @@ public class AdminController {
 	@PostMapping("/updateCategory")
 	public String updateCategory(@ModelAttribute Category category, @RequestParam("file") MultipartFile file,
 			HttpSession session) throws IOException {
-
-		Category oldCategory = categoryService.getCategoryById(category.getId());
-		String imageName = file.isEmpty() ? oldCategory.getImageName() : file.getOriginalFilename();
-
-		if (!ObjectUtils.isEmpty(category)) {
-
-			oldCategory.setName(category.getName());
-			oldCategory.setIsActive(category.getIsActive());
-			oldCategory.setImageName(imageName);
+		Boolean updated = categoryService.updateCategory(category, file);
+		if(updated) {
+			session.setAttribute("succMsg", "Category Updated Sucessfully!");
+		}else {
+			session.setAttribute("errorMsg", "Not Updated! Internal Server Error!");
 		}
-
-		Category updateCategory = categoryService.saveCategory(oldCategory, file, session);
-
-		if (!ObjectUtils.isEmpty(updateCategory)) {
-
-			if (!file.isEmpty()) {
-				File saveFile = new ClassPathResource("static/img").getFile();
-
-				Path path = Paths.get(saveFile.getAbsolutePath() + File.separator + "category_img" + File.separator
-						+ file.getOriginalFilename());
-
-				// System.out.println(path);
-				Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
-			}
-
-			session.setAttribute("succMsg", "Category update success");
-		} else {
-			session.setAttribute("errorMsg", "something wrong on server");
-		}
-
+		
 		return "redirect:/admin/loadEditCategory/" + category.getId();
 	}
 

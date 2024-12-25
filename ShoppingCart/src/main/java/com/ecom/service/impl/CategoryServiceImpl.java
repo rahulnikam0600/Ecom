@@ -31,34 +31,39 @@ public class CategoryServiceImpl implements CategoryService{
 	private CategoryRepository categoryRepository;
 	
 	@Override
-	public Category saveCategory(Category category, MultipartFile file, HttpSession session) throws IOException {
+	public Boolean saveCategory(Category category, MultipartFile file) throws IOException {
 		
 		String imageName = file.isEmpty() ? "default.jpg": file.getOriginalFilename();
 		category.setImageName(imageName);
-		Category savedCategory = null;
-		if(isCategoryExist(category.getName())) {
-			session.setAttribute("errorMsg", "Category Already Exists");
+		Boolean saved = false;
+		Category savedCategory = categoryRepository.save(category);
+		if (!ObjectUtils.isEmpty(savedCategory)) {
+				commonService.saveImage(file, "category_img");
+			saved = true;
 		}
-		else {
-			savedCategory = categoryRepository.save(category);
-			if (ObjectUtils.isEmpty(savedCategory)) {
-				session.setAttribute("errorMsg", "Not saved ! Internal Server Error");
-			}
-			else  if ( !file.isEmpty() ) {
-				String name =  commonService.saveImage(file, "category_img");
-				
-				if(!ObjectUtils.isEmpty(name)) {
-					session.setAttribute("succMsg", "Saved successfully");
-				}
-				else {
-					session.setAttribute("errorMsg", "Category Created Without Image !");
-				}
-			}
-			else {
-				session.setAttribute("succMsg", "Category Created Without Image !");
-			}
+		return saved;
+	}
+
+	@Override
+	public Boolean updateCategory(Category category, MultipartFile file) throws IOException {
+		
+		Boolean updated = false;
+		Category oldCategory = getCategoryById(category.getId());
+		String imageName = file.isEmpty() ? oldCategory.getImageName() : file.getOriginalFilename();
+		
+		if(!ObjectUtils.isEmpty(category)) {
+			oldCategory.setName(category.getName());
+			oldCategory.setIsActive(category.getIsActive());
+			oldCategory.setImageName(imageName);
 		}
-		return savedCategory;
+		
+		Category updatedCategory = categoryRepository.save(oldCategory);
+		
+		if (!ObjectUtils.isEmpty(updatedCategory)) {
+			commonService.saveImage(file, "category_img");
+			updated = true;
+		}
+		return updated;
 	}
 
 	@Override
@@ -96,4 +101,5 @@ public class CategoryServiceImpl implements CategoryService{
 		List<Category> categories = categoryRepository.findByIsActiveTrue();
 		return categories;
 	}
+
 }

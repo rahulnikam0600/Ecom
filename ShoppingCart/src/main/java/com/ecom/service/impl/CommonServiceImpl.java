@@ -33,25 +33,25 @@ public class CommonServiceImpl  implements CommonService{
 	@Override
 	public String saveImage(MultipartFile file, String folderName) {
 
-		File saveFile;
-		try {
-			
-			String filename = file.getOriginalFilename();
-			
-			saveFile = new ClassPathResource("static/img").getFile();
+		if(!file.isEmpty()) {
+			try {
+				
+				String filename = file.getOriginalFilename();
+				
+				File saveFile = new ClassPathResource("static/img").getFile();
 
-			Path path = Paths.get(saveFile.getAbsolutePath() + File.separator + folderName + File.separator
-					+ filename);
+				Path path = Paths.get(saveFile.getAbsolutePath() + File.separator + folderName + File.separator
+						+ filename);
 
-			// System.out.println(path);
-			Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
+				// System.out.println(path);
+				Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
+				
+				return filename;
 			
-			return filename;
-		
-		} catch (IOException e) {
-			e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
-		
 		return null;
 	}
 
