@@ -1,61 +1,53 @@
 package com.ecom.service.impl;
 
-import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.ecom.model.Product;
 import com.ecom.repository.ProductRepository;
+import com.ecom.service.CommonService;
 import com.ecom.service.ProductService;
 
 @Service
 public class ProductServiceImpl implements ProductService {
 
+	private final String folderName = "product_img";
+
 	@Autowired
-	ProductRepository productRepository;
+	 private ProductRepository productRepository;
 	
-	@Override
-	public Product saveProduct(Product product) {
-		return productRepository.save(product);
-	}
-
-	@Override
-	public List<Product> getAllProducts() {
-		return productRepository.findAll();
-	}
-
-	@Override
-	public boolean deleteProduct(Integer id) {
+	@Autowired
+	private CommonService commonService;
 		
-		Product product = productRepository.findById(id).orElse(null);
+	@Override
+	public Boolean saveProduct(Product product, MultipartFile file) {
 		
-		if (!ObjectUtils.isEmpty(product)) {
-			productRepository.deleteById(id);
-			return true;
+		Boolean saved = false;
+		String imageName = file.isEmpty() ? "default.jpg" : file.getOriginalFilename();
+		
+		product.setImage(imageName);
+		product.setDiscount(0);
+		product.setDiscountPrice(product.getPrice());
+		Product savedProduct = productRepository.save(product);
+		
+		if(!ObjectUtils.isEmpty(savedProduct)) {
+			commonService.saveImage(file, folderName);
+			saved = true;
 		}
-		return false;
+		return saved;
 	}
 
 	@Override
-	public Product getProductById(Integer id) {
-		return productRepository.findById(id).get();
-	}
-	
-	@Override
-	public Product updateProduct(Product product, MultipartFile image) {
+	public Boolean updateProduct(Product product, MultipartFile file) {
 
+		Boolean updated = false;
 		Product dbProduct = getProductById(product.getId());
 
-		String imageName = image.isEmpty() ? dbProduct.getImage() : image.getOriginalFilename();
+		String imageName = file.isEmpty() ? dbProduct.getImage() : file.getOriginalFilename();
 
 		dbProduct.setTitle(product.getTitle());
 		dbProduct.setDescription(product.getDescription());
@@ -71,26 +63,30 @@ public class ProductServiceImpl implements ProductService {
 		Double discountPrice = product.getPrice() - disocunt;
 		dbProduct.setDiscountPrice(discountPrice);
 
-		Product updateProduct = productRepository.save(dbProduct);
+		Product updatedProduct = productRepository.save(dbProduct);
 
-		if (!ObjectUtils.isEmpty(updateProduct)) {
-
-			if (!image.isEmpty()) {
-
-				try {
-					File saveFile = new ClassPathResource("static/img").getFile();
-
-					Path path = Paths.get(saveFile.getAbsolutePath() + File.separator + "product_img" + File.separator
-							+ image.getOriginalFilename());
-					Files.copy(image.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
-
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-			return product;
+		if (!ObjectUtils.isEmpty(updatedProduct)) {
+			commonService.saveImage(file, folderName);
+			updated = true;
 		}
-		return null;
+		return updated;
+	}
+
+	@Override
+	public boolean deleteProduct(Integer id) {
+		
+		Product product = productRepository.findById(id).orElse(null);
+		
+		if (!ObjectUtils.isEmpty(product)) {
+			productRepository.deleteById(id);
+			return true;
+		}
+		return false;
+	}
+	
+	@Override
+	public List<Product> getAllProducts() {
+		return productRepository.findAll();
 	}
 
 	@Override
@@ -103,6 +99,11 @@ public class ProductServiceImpl implements ProductService {
 		}
 
 		return products;
+	}
+
+	@Override
+	public Product getProductById(Integer id) {
+		return productRepository.findById(id).get();
 	}
 
 }

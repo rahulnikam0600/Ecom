@@ -7,8 +7,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.ecom.model.Category;
 
-import jakarta.servlet.http.HttpSession;
-
 public interface CategoryService {
 	
 	public Boolean saveCategory(Category category, MultipartFile file) throws IOException;

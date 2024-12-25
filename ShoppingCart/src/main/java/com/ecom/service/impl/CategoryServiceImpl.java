@@ -1,15 +1,9 @@
 package com.ecom.service.impl;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -19,13 +13,11 @@ import com.ecom.repository.CategoryRepository;
 import com.ecom.service.CategoryService;
 import com.ecom.service.CommonService;
 
-import jakarta.servlet.http.HttpSession;
-
 @Service
 public class CategoryServiceImpl implements CategoryService{
 
 	@Autowired
-	CommonService commonService;
+	private CommonService commonService;
 	
 	@Autowired
 	private CategoryRepository categoryRepository;
